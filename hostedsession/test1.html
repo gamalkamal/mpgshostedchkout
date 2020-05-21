@@ -1,0 +1,208 @@
+<html>
+<head>
+<!-- INCLUDE SESSION.JS JAVASCRIPT LIBRARY -->
+<script src="https://test-gateway.mastercard.com/form/version/56/merchant/TESTVIKAS/session.js"></script>
+
+<!-- APPLY CLICK-JACKING STYLING AND HIDE CONTENTS OF THE PAGE -->
+<style id="antiClickjack">body{display:none !important;}</style>
+</head>
+<body>
+
+<!-- CREATE THE HTML FOR THE PAYMENT PAGE -->
+
+<div>Please enter your payment details:</div>
+<h3>Credit Card</h3>
+<div>Card Number: <input type="text" id="card-number" class="input-field" value="" readonly></div>
+<div>Expiry Month:<input type="text" id="expiry-month" class="input-field" value=""></div>
+<div>Expiry Year:<input type="text" id="expiry-year" class="input-field" value=""></div>
+<div>Security Code:<input type="text" id="security-code" class="input-field" value="" readonly></div>
+<div><button id="payButton" onclick="pay('card');">Pay Now</button></div>
+
+<h3>Gift Card</h3>
+<div>Card Number: <input type="text" id="gift-card-number" class="input-field" value="" readonly></div>
+<div>Pin:<input type="text" id="gift-card-pin" class="input-field" value="" readonly></div>
+
+<div><button id="payButton" onclick="pay('giftCard');">Pay With Gift Card</button></div>
+
+<h3>Automated Clearing House</h3>
+  <div>
+  <label class="control-label" id="ach-account-type-label">Account Type:</label>
+  <select class="form-control col-sm-6" name="ach-account-type" id="ach-account-type">
+  <option value="CONSUMER_SAVINGS">Consumer Savings Account</option>
+  <option value="CONSUMER_CHECKING" selected>Consumer Checking Account</option>
+  <option value="CORPORATE_CHECKING">Business Checking Account</option>
+ </select>
+    </div>
+
+<div>Bank Account Holder:<input type="text" id="ach-account-holder" class="input-field" value="" readonly></div>
+<div>Bank Account Number:<input type="text" id="ach-account-number" class="input-field" value="" readonly></div>
+<div>Routing Number:<input type="text" id="ach-routing-number" class="input-field" value="" readonly></div>
+
+<div><button id="payButton" onclick="pay('ach');">Pay With ACH</button></div>
+<hr>
+
+
+<!-- DISPLAY VISA CHECKOUT AND AMEX EXPRESS CHECKOUT AS A PAYMENT OPTION ON YOUR PAYMENT PAGE -->
+
+<!-- REPLACE THE action URL with the payment URL on your webserver -->
+<form name="myform" method="POST" action="https://ech-10-168-129-136.mastercard.int/mpgstest/hostedsession/test1.html">
+<!-- Other fields can be added to enable you to collect additional data on the payment page -->
+Email: <input type="text" name="email">
+<!-- The hidden values below can be set in the callback function as they are returned when creating the session -->
+<input type="hidden" name="sessionId" id="sessionId">
+<img id="visaCheckoutButton" alt="Visa Checkout" role="button" class="v-button" style="display: none;" src="https://sandbox.www.v.me/wallet-services-web/xo/button.png"/>
+<div id="amex-express-checkout"></div>
+</form>
+
+<!-- JAVASCRIPT FRAME-BREAKER CODE TO PROVIDE PROTECTION AGAINST IFRAME CLICK-JACKING -->
+<script type="text/javascript">
+if (self === top) {
+    var antiClickjack = document.getElementById("antiClickjack");
+    antiClickjack.parentNode.removeChild(antiClickjack);
+} else {
+    top.location = self.location;
+}
+
+PaymentSession.configure({
+    fields: {
+        // Attach hosted fields to your payment page
+            card: {
+                number: "#card-number",
+                securityCode: "#security-code",
+                expiryMonth: "#expiry-month",
+                expiryYear: "#expiry-year"
+            },
+            giftCard: {
+                    number: "#gift-card-number",
+                    pin: "#gift-card-pin"
+                  },
+            ach: {
+                    accountType: "#ach-account-type",
+                    bankAccountHolder: "#ach-account-holder",
+                    bankAccountNumber: "#ach-account-number",
+                    routingNumber: "#ach-routing-number"
+                  }
+          },  
+    frameEmbeddingMitigation: ["javascript"],
+    callbacks: {
+        initialized: function(response) {
+            // HANDLE INITIALIZATION RESPONSE
+            if (response.status === "ok") {
+                document.getElementById("visaCheckoutButton").style.display = 'block';
+            }
+        },
+
+        formSessionUpdate: function(response) {
+            // HANDLE RESPONSE FOR UPDATE SESSION
+        if (response.status) {
+            if ("ok" == response.status) {
+                console.log("Session updated with data: " + response.session.id);
+
+                //check if the security code was provided by the user
+                if (response.sourceOfFunds.provided.card.securityCode) {
+                    console.log("Security code was provided.");
+                }
+
+                //check if the user entered a MasterCard credit card
+                if (response.sourceOfFunds.provided.card.scheme == 'MASTERCARD') {
+                    console.log("The user entered a MasterCard credit card.")
+                }
+            } else if ("fields_in_error" == response.status)  {
+
+                console.log("Session update failed with field errors.");
+                if (response.errors.cardNumber) {
+                    console.log("Card number invalid or missing.");
+                }
+                if (response.errors.expiryYear) {
+                    console.log("Expiry year invalid or missing.");
+                }
+                if (response.errors.expiryMonth) {
+                    console.log("Expiry month invalid or missing.");
+                }
+                if (response.errors.securityCode) {
+                    console.log("Security code invalid.");
+                }
+                if (response.errors.number) {
+                    console.log("Gift card number invalid or missing.");
+                }
+                if (response.errors.pin) {
+                    console.log("Pin invalid or missing.");
+                }
+                if (response.errors.bankAccountHolder) {
+                    console.log("Bank account holder invalid.");
+                }
+                if (response.errors.bankAccountNumber) {
+                    console.log("Bank account number invalid.");
+                }
+                if (response.errors.routingNumber) {
+                 	  console.log("Routing number invalid.");
+                }
+            } else if ("request_timeout" == response.status)  {
+                console.log("Session update failed with request timeout: " + response.errors.message);
+            } else if ("system_error" == response.status)  {
+                console.log("Session update failed with system error: " + response.errors.message);
+            }
+        } else {
+            console.log("Session update failed: " + response);
+        }
+        },
+        visaCheckout: function(response) {
+            // HANDLE VISA CHECKOUT RESPONSE
+        },
+        amexExpressCheckout: function(response) {
+           // HANDLE AMEX EXPRESS CHECKOUT RESPONSE
+        }
+    },
+    order: {
+        amount: 10.00,
+        currency: "AUD"
+    },
+    wallets: {
+        visaCheckout: {
+            enabled: true,
+            // Add Visa Checkout API specific attributes here
+            countryCode: "AU",
+            displayName: "Display name",
+            locale: "en_au",
+            logoUrl: "http://logo.logo",
+            payment: {
+                cardBrands: [
+                    "VISA"
+                ]
+            },
+            review: {
+                buttonAction: "Pay",
+                message: "Message"
+            },
+            shipping: {
+                acceptedRegions: [
+                    "AU"
+                ],
+                collectShipping: true
+            }
+        },
+        amexExpressCheckout: {
+        enabled: true,
+        // Add Amex Express Checkout API specific attributes here
+        initTags: {
+        "theme": "responsive",
+        "env": "qa",
+        "disable_btn": "false",
+        "button_color": "light",
+        "client_id": "<MSO Client Id from the Amex Express Checkout configuration page in Merchant Administration>",
+        }
+    }
+}
+});
+
+function pay(paymentType) {
+    // UPDATE THE SESSION WITH THE INPUT FROM HOSTED FIELDS
+    if (paymentType === 'giftCard') {
+    	PaymentSession.updateSessionFromForm(paymentType, '<localCardBrand>');
+    } else {
+    	PaymentSession.updateSessionFromForm(paymentType);
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+body {
+display:table;
+margin-left:38%;
+margin-top:10%;
+}
+h2 {
+    display:block;
+    font: 25px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    width:400px;
+    font-size:25px;
+    color:#000000;
+}
+
+h3 {
+    margin:10px auto;
+    font: 17px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    border-color: #FF0000;
+}
+
+
+input{
+    background: #4B99AD;
+    padding: 18px 25px 18px 25px;
+    font-size:25px;
+    border: none;
+    color: #fff;
+}
+
+input:hover {
+    background: #FF0000;
+    box-shadow:none;
+    -moz-box-shadow:none;
+    -webkit-box-shadow:none;
+}
+.logo img {
+    display:block;
+    width:200px;
+}
+h4 a {
+    font: 20px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    text-decoration: none;
+    color:#FFFFFF;
+    background: #003366;
+    padding:2px 20px 5px 20px;
+    margin-left:18px;
+}
+h4 a:hover {
+    background: #D5DBDB;
+    color:#000000;
+}
+.box {
+    padding-left:17px;
+}
+

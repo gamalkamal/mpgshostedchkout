@@ -1,0 +1,136 @@
+<!DOCTYPE html>.
+<html>..<?php require_once('partials/header.html'); ?>.
+<body>..<?php require_once('partials/banner.html'); ?>...
+<div class="container">..
+    <div class="row">.. <?php require_once('partials/navigation.html'); ?>.
+        <div class="col-9">.
+            <div class="row">
+                <h3>Hosted Checkout</h3>
+                <p>The Hosted Checkout model allows you to collect payment details from your payer through an
+                    interaction hosted and displayed by the Payment Gateway. This means you aren't responsible for
+                    handling sensitive PCI data.</p>
+                <p>Hosted Checkout can be implemented as:</p>
+                <div class="container mt-5">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Lightbox</h5>
+                            <ul class="my-4">
+                                <li>Opens modal; doesn't redirect away from merchant site</li>
+                                <li>Seamless checkout experience</li>
+                            </ul>
+                            <input id="lightbox-with-session" type="button" class="btn btn-primary mr-2"
+                                   value="Pay with Lightbox" onclick="Checkout.showLightbox();"/>
+                        </div>
+                        <div class="col">
+                            <h5>Payment Page</h5>
+                            <ul class="my-4">
+                                <li>Redirects to Gateway-hosted payment page</li>
+                                <li>Ideal if your site isn't SSL-secured</li>
+                            </ul>
+                            <input id="page-with-session" type="button" class="btn btn-primary"
+                                   value="Pay with Payment Page" onclick="Checkout.showPaymentPage();"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- row -->
+</div>
+<script src="<?= $checkoutJSUrl ?>"
+        data-error="errorCallback"
+        data-cancel="cancelCallback"
+        data-beforeRedirect="beforeRedirect"
+        data-afterRedirect="afterRedirect"
+        data-complete="completeCallback">
+</script>
+<script>
+    var merchantId = "<?= $merchantId ?>";
+    var sessionId = "<?= $sessionId ?>";
+    var sessionVersion = "<?= $sessionVersion ?>";
+    var successIndicator = "<?= $successIndicator ?>";
+    var orderId = "<?= $orderId ?>";
+    var resultIndicator = null;
+
+    // This method preserves the current state of successIndicator and orderId, so they're not overwritten when we return to this page after redirect
+    function beforeRedirect() {
+        return {
+            successIndicator: successIndicator,
+            orderId: orderId,
+            sessionId: sessionId,
+            sessionVersion: sessionVersion,
+            merchantId: merchantId
+        };
+    }
+
+    // This method is specifically for the full payment page option. Because we leave this page and return to it, we need to preserve the
+    // state of successIndicator and orderId using the beforeRedirect/afterRedirect option
+    function afterRedirect(data) {
+        // Compare with the resultIndicator saved in the completeCallback() method
+        if (resultIndicator) {
+            var result = (resultIndicator === data.successIndicator) ? "SUCCESS" : "ERROR";
+            window.location.href = "/hostedCheckout/" + data.orderId + "/" + result;
+        }
+        else {
+            successIndicator = data.successIndicator;
+            orderId = data.orderId;
+            sessionId = data.sessionId;
+            sessionVersion = data.sessionVersion;
+            merchantId = data.merchantId;
+
+            window.location.href = "/hostedCheckout/" + data.orderId + "/" + data.successIndicator + "/" + data.sessionId;
+        }
+
+//        var result = (resultIndicator === data.successIndicator)   ? "SUCCESS" : "ERROR";
+//        window.location.href = "/hostedCheckout/" + data.orderId + "/" + result;
+    }
+
+    function errorCallback(error) {
+        console.log(JSON.stringify(error));
+    }
+    function cancelCallback() {
+        console.log('Payment cancelled');
+        // Reload the page to generate a new session ID - the old one is out of date as soon as the lightbox is invoked
+        window.location.reload(true);
+    }
+
+    // This handles the response from Hosted Checkout and redirects to the appropriate endpoint
+    function completeCallback(response) {
+        // Save the resultIndicator
+        resultIndicator = response;
+        var result = (resultIndicator === successIndicator) ? "SUCCESS" : "ERROR";
+        window.location.href = "mpgstest/hostedchkout/" + orderId + "/" + result;
+    }
+
+    function randomId() {
+        var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", length = 10;
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+        return result;
+    }
+
+    Checkout.configure({
+        merchant: merchantId,
+        order: {
+            amount: function () {
+                return <?= rand(10, 1000) ?>;
+            },
+            currency: 'USD',
+            description: 'R2D2 Droid',
+            id: orderId
+        },
+        session: {
+            id: sessionId,
+            version: sessionVersion
+        },
+        interaction: {
+            merchant: {
+                name: 'Luke Skywalker',
+                address: {
+                    line1: 'Mos Espa',
+                    line2: 'Tatooine'
+                }
+            }}
+    });
+</script>
+</body>
+</html>
