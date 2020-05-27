@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<?php require_once('partials/header.html'); ?>
+<body>
+<?php require_once('partials/banner.html'); ?>
+<div class="container">
+    <div class="row">
+        <?php require_once('partials/navigation.html'); ?>
+        <div class="col-9">
+            <div class="row">
+                <div class="alert alert-warning" role="alert">
+                    <p class="mb-0">This is a Customized ACS Redirect form, you my choose to redirect automatically by using a Simple Redirect, more details <a href="<?= $baseURL . 'api/documentation/integrationGuidelines/supportedFeatures/pickAdditionalFunctionality/3DS/3DSAuthentication.html#x_3DSCheckEnrollment'?>" target="_blank">here.</a> </p>
+                </div>
+                <form name="3dsRedirect" action="https://mtf.gateway.mastercard.com/acs/MastercardACS/497c1244-b61e-4a82-8508-8703ecfc4ba7" method="POST" accept-charset="UTF-8">
+
+                    <!-- Populate the mandatory PaReq parameter with the value returned in the 3DSecure.authenticationRedirect.customized.paReq response parameter.  -->
+
+                    <input type="hidden" name="PaReq" value="eAFVUlFv2jAQfq/U/xBFe5vC2QajgA5XrGgbqpiiplTaY+qcIBpOwAkb/fc9B1jbe/J39n333XfGu5PbRX/Jt1VTz2I5EHFEtW3Kqt7M4vXT9ySN78ztDT5tPdEiJ3v0ZHBFbVtsKKpKrhEhRhOtxVDFBrP5Ix0MXjgNUw4UwhVyqbfbou4MFvbwbfnLyEsgXBLoyC8XxjbO/aMXZ9u+KWui0EginO+xLhyZVfYjf14+zHOEHqNtjnXnX40YjhGuAI9+Z7Zdt2+nAGS3iRSJHKeJVJNEDscDV7Qd6yp8OajqDhDCe4R3rdkxqG559FNVmmy1gOyw3Hm/Ubl1v0f51/Revqyz9M8MIbzAsujIKKGE0EpHQk+1no4mCH0eCxdUmvl6EX1hgwTPfs7gPjSanwE7i/Axgey+5/Vcp7sipNO+qYkZ2en/Z4R31fc/g9+2Y1+1VMORDlb2kQbf+4vAUrFzSgrd0wSAEErhslR2pF88Zz59iNubN94FusU="/>
+
+                    <!-- Populate the mandatory TermUrl value with the URL to which you want the payer returned when the authentication process has completed. This should be the same value as supplied in the 3DSecure.authenticationRedirect.responseUrl  parameter to the CHECK_ENROLLMENT request. -->
+
+                    <input type="hidden" name="TermUrl" value="https://ech-10-168-129-136.mastercard.int/mpgstest/hostedsession/simple.php"/>
+
+                    <!-- The ACS will echo the contents of the mandatory MD parameter when the payer is returned to the URL specified in the TermUrl parameter.  You can use this parameter to establish a link between the ACS request and response. -->
+
+                    <input type="hidden" name="MD" value="<?= $mdValue ?>"/>
+                    <div class="form-group"> <label class="col-md-7 control-label" for="process"></label>
+                        <div class="col-md-7">
+<!--                            <input type="submit" value="Click  here to continue" class="button">-->
+                            <button id="process" name="process" class="btn btn-primary">Click Here to Continue</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
