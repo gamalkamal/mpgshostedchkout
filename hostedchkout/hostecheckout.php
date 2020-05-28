@@ -10,7 +10,8 @@ $amount = $_POST['amount'];
 $description = $_POST['description'];
 $phone = $_POST['phone'];
 $Email = $_POST['Email'];
-$order_id = $merchant . '-' . date("YmdHis");
+$order_id = date("YmdHis");
+//$order_id = $merchant . '-' . date("YmdHis");
 //$order_id = $merchant . '-' . uniqid(rand(), true) . date("YmdHis");
 $comurl = "https://ech-10-168-129-136.mastercard.int/mpgstest/hostedchkout/complete.html";
 //Enter interaction.returnUrl below
