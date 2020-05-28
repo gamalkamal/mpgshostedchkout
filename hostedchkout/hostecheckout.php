@@ -90,11 +90,15 @@ curl_close($curl);
         	};
     	   }
 	   function afterRedirect(data) {
+		  console.log(data);
+		  console.log(resultIndicator);
+		  console.log(data.successIndicator);
 	        // Compare with the resultIndicator saved in the completeCallback() method
        		 if (resultIndicator) {
         	  var result = (resultIndicator === data.successIndicator) ? "SUCCESS" : "ERROR";
-//     	       	  window.location.href = "<?php echo $url ?>";
-		  window.location.href = comurl;
+		  //console.log(data.orderId);
+     	       	  window.location.href = comurl;
+		  //window.location.href = "/mpgstest/hostedchkout/" + data.orderId + "/" + result;
         	}	
         	else {
 		  successIndicator = data.successIndicator;
@@ -102,8 +106,8 @@ curl_close($curl);
                   sessionId = data.sessionId;
                   sessionVersion = data.sessionVersion;
                   merchantId = data.merchantId;
-//            	  window.location.href = "<?php echo $url ?>";
-		  window.location.href = comurl;
+            	  window.location.href = comurl;
+		  //window.location.href = "/mpgstest/hostedchkout/" + data.orderId + "/" + data.successIndicator + "/" + data.sessionId;
       	    }}
 
     	    function completeCallback(response) {
