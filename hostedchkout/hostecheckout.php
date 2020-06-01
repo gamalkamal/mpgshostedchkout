@@ -13,7 +13,7 @@ $Email = $_POST['Email'];
 $order_id = date("YmdHis");
 //$order_id = $merchant . '-' . date("YmdHis");
 //$order_id = $merchant . '-' . uniqid(rand(), true) . date("YmdHis");
-$comurl = "https://ech-10-168-129-136.mastercard.int/mpgstest/hostedchkout/complete.html";
+$comurl = "https://mpgstests.herokuapp.com/hostedchkout/complete.html";
 //Enter interaction.returnUrl below
 $url = $rwurl;
 $apiUsername = "merchant.$merchant";
