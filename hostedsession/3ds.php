@@ -17,9 +17,9 @@
 <div>Expiry Year:<input type="text" id="expiry-year" class="input-field" title="expiry year" aria-label="Two digit expiry year" value="" tabindex="3" readonly></div>
 <div>Security Code:<input type="text" id="security-code" class="input-field" title="security code" aria-label="Three digit CCV security code" value="" tabindex="4" readonly></div>
 <div>Cardholder Name:<input type="text" id="cardholder-name" class="input-field" title="cardholder name" aria-label="Enter name on card" value="" tabindex="5" readonly></div>
-<div>MID: <input type="text" id="mid" class="input-field" title="Merchant Number" aria-label="Enter your merchant number" value="TESTMPGSVIKAS" tabindex="6"></div>
+<div>MID: <input type="text" id="mid" class="input-field" title="Merchant Number" aria-label="Enter your merchant number" value="" tabindex="6"></div>
 <div>Amount: <input type="text" id="amount" class="input-field" title="Amount" aria-label="Enter amount" value="1" tabindex="7"></div>
-<div>API Password: <input type="text" id="api" class="input-field" title="API Password" aria-label="Enter api password" value="69e6c92c8b1b88be2a706c0ed9b407ba" tabindex="8" readonly></div>
+<div>API Password: <input type="text" id="api" class="input-field" title="API Password" aria-label="Enter api password" value="" tabindex="8" readonly></div>
 <div>Currency: <input type="text" id="currency" class="input-field" title="currency" aria-label="Enter your currency" value="AUD" tabindex="9"></div>
 <div><button id="payButton" onclick="pay('card');">Pay Now</button></div>
 
