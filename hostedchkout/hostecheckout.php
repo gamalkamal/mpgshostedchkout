@@ -46,7 +46,7 @@ curl_close($curl);
  <link rel="stylesheet" type="text/css" href="paystyle.css">
 
     <head>
-        <script src = "<?php echo $jsurl ?>"
+        <script src = "https://test-gateway.mastercard.com/checkout/version/56/checkout.js"
                 data-complete="completeCallback"
                 data-error="<?php echo $url ?>"
                 data-cancel="<?php echo $url ?>"
@@ -178,6 +178,7 @@ console.log(sessionId);
     <p>Email: <?php echo $Email ?></p>
     <p>Description: <?php echo $description ?></p>
     <h1><input type="button" value="Pay" onclick="Checkout.showLightbox();" /></h1>
+    <h1><input type="button" value="Pay with Payment Page" onclick="Checkout.showPaymentPage();" /></h1>
     </div>
 <!--        <input type="button" value="Pay with Lightbox" onclick="Checkout.showLightbox();" />
         <input type="button" value="Pay with Payment Page" onclick="Checkout.showPaymentPage();" /> -->
